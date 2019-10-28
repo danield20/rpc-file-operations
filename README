@@ -1,0 +1,37 @@
+In primul rand aceasta tema mi s-a parut foarte interesanta deoarece am
+reusit sa aprofundez conceptele legate de RPC. In continuare o sa detaliez
+felul in care am ales sa implementez tema.
+
+Pentru transmiterea de mesaje de la client la server am ales sa folosesc 2 structuri:
+una pentru request si una pentru response. Fiecare din aceste 2 structuri contine
+un intreg (type) si un string care contine mesajul trimis fie de la client la server
+fie de la server la client. Cum am mentionat si mai sus, campul type este folosit
+pentru sincronizarea intre client si server, astfel incat sa nu se poata primi raspuns
+la o cerere de SEARCH fara ca in prealabil serverul sa fi raspuns cu "YES SEARCH".
+
+In ceea ce priveste implementarea clientului:
+    - dupa ce se stabileste conexiunea cu serverul, se printeaza toate optiunile
+posibile pentru client (HELP, SEARCH, APPEND, END)
+    - se intra intr-o bucla unde se asteapta comenzi de la input, daca este o comanda
+cunoscuta atunci se merge la functia specifica acelei comenzi
+    - rularea clientului se termina atunci cand se primeste comanda END
+    - in timpul rularii clientului se afiseaza la stdout fie mesajele primite de la server,
+fie mesaje interactive
+
+In ceea ce priveste implementarea serverului:
+    - atunci cand se primeste o comanda de tipul 1, se verifica daca este o comanda
+valida. Daca este o comanda valida atunci se raspunde inapoi cu "YES" + comanda care
+a fost trimisa. In acelasi timp la acest pas, se populeaza 2 map-uri care retin
+asocierea cuvant-aparitii si lungime-cuvinte cu aceasta lungime. Fisierul de input
+se numeste input.txt si cuvintele din el pot fi impartite dupa urmatorii delimitatori:
+{' ', '.', ',', '-', ';', ':', '?', '!', '(', ')', '\n'}
+    - daca se primeste o comanda de tipul 2, si serverul este in timpul unei comenzi
+de acest tip, atunci se intoarce raspunsul corect (luat din cele 2 map-uri populate
+anterior) sau, in cazul comenzi APPEND, se adauga la sfarsitul fisierului cu delimitatorul
+" " si se updateaza cele 2 map-uri.
+
+NOTA: daca fisierul input.txt este modificat direct atunci cand serverul este pornit
+(adica nu prin comanda APPEND a clientului), serverul trebuie repornit pentru a
+lua in calcul noile modificari
+
+DINCA DANIEL, 343C3
